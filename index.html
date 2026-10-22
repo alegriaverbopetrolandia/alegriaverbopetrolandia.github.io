@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alegria - Gestão Ministerial</title>
+<meta name="description" content="Gestão ministerial da Igreja Verbo da Vida de Petrolândia.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#C9440F">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alegria">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+  :root { --bg: #F1F3F6; --ink: #141B26; --muted: #5A6576; --accent: #C9440F; color-scheme: light; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0E131A; --ink: #E7EBF1; --muted: #9AA5B5; --accent: #FF7B3F; color-scheme: dark; } }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 16px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  #app { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: var(--bg); }
+  #capa { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: var(--bg); text-align: center; padding: 24px; transition: opacity .35s; z-index: 2; }
+  #capa img { width: 132px; height: 132px; filter: drop-shadow(0 10px 24px rgba(201, 68, 15, .28)); animation: pulso 1.6s ease-in-out infinite; }
+  #capa b { font-size: 28px; letter-spacing: -.01em; margin-top: 8px; }
+  #capa span { color: var(--muted); font-size: 14px; max-width: 280px; }
+  #capa .msg { margin-top: 14px; font-size: 14.5px; }
+  #capa a { color: var(--accent); font-weight: 700; }
+  #capa.saiu { opacity: 0; pointer-events: none; }
+  @keyframes pulso { 50% { transform: scale(1.04); } }
+  @media (prefers-reduced-motion: reduce) { #capa img { animation: none; } }
+</style>
+</head>
+<body>
+<div id="capa" role="status">
+  <img src="logo.svg" alt="">
+  <b>Alegria</b>
+  <span>Gestão Ministerial · Igreja Verbo da Vida de Petrolândia</span>
+  <div class="msg" id="msg">Abrindo…</div>
+</div>
+<iframe id="app" title="Alegria - Gestão Ministerial" allow="clipboard-write; clipboard-read; fullscreen; web-share"></iframe>
+<script>
+(function () {
+  var APP = 'https://script.google.com/macros/s/AKfycbxBJAtRe-MiLl8BNpqKgwfCxlQdPoXVB4Mgr4kxKSVvGp6zvmIe_qAEBWtmnHOR98Sx/exec';
+  var capa = document.getElementById('capa'), msg = document.getElementById('msg'), fr = document.getElementById('app');
+  function sair() { capa.classList.add('saiu'); }
+  function semInternet() { msg.innerHTML = 'Sem internet no momento. Conecte-se e toque em <a href="#" id="denovo">tentar de novo</a>.'; document.getElementById('denovo').onclick = function (e) { e.preventDefault(); location.reload(); }; }
+  if (!navigator.onLine) semInternet();
+  else {
+    fr.addEventListener('load', function () { setTimeout(sair, 900); });
+    fr.src = APP;
+    setTimeout(function () { if (!capa.classList.contains('saiu')) msg.innerHTML = 'Está demorando… <a href="' + APP + '">abrir direto</a>'; }, 20000);
+  }
+  window.addEventListener('online', function () { if (!fr.src) location.reload(); });
+  if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+})();
+</script>
+</body>
+</html>
